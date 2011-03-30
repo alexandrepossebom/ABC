@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/linearLayout1" android:layout_height="wrap_content"
+	android:layout_width="wrap_content" android:baselineAligned="false"
+	android:orientation="vertical">
+	<LinearLayout android:id="@+id/linearLayout2"
+		android:layout_width="fill_parent" android:layout_gravity="fill_horizontal"
+		android:layout_weight="1" android:layout_height="fill_parent"
+		android:gravity="center_vertical|center_horizontal">
+		<Button android:text="Novo Jogo" android:id="@+id/buttonNew"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:layout_gravity="center_horizontal"></Button>
+		<Button android:text="Repetir" android:id="@+id/buttonRepeat"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"></Button>
+		<TextView android:text="TextView" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
+	<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/gridview" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:numColumns="auto_fit"
+		android:verticalSpacing="10dp" android:horizontalSpacing="10dp"
+		android:columnWidth="50dp" android:stretchMode="columnWidth"
+		android:gravity="center" android:layout_gravity="center"
+		android:layout_weight="1" />
+	<RelativeLayout android:layout_width="fill_parent"
+		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
+		android:layout_weight="1">
+	</RelativeLayout>
+</LinearLayout>
+
