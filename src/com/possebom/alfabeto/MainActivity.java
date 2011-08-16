@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.LightingColorFilter;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	/** Called when the activity is first created. */
 
 	private static String [] alfabeto = {"A","B","C","D","E","F","G","H","I","J","L","M","N","O","P","Q","R","S","T","U","V","X","Z"};  
 	ArrayList<Button> buttons = new ArrayList<Button>();
@@ -28,37 +28,40 @@ public class MainActivity extends Activity {
 	boolean started = false;
 	TextView tv;
 	int erros = 0;
-	MediaPlayer mp;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);          
-
-
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.main);
-
 		final GridView grid = (GridView) findViewById(R.id.gridview);
 		grid.setAdapter(new customAdapter(this));
-
+		
 		final Button button = (Button) findViewById(R.id.buttonNew);
 		tv = (TextView) findViewById(R.id.textView1);
 		tv.setText("Erros : "+ erros);
 
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				started = true;				
 				letras.clear();
 				for (int i = 0; i < alfabeto.length; i++) {
 					letras.add(alfabeto[i]);
 				}
 				erros = 0;
 				tv.setText("Erros : "+ erros);
+				grid.setAdapter(new customAdapter(getApplicationContext()));  
 				sort();
-				grid.setAdapter(new customAdapter(getApplicationContext()));            	
 				say(getApplicationContext());
+				if(started)	
+				{
+					for (Button b : buttons) {			
+						b.setEnabled(true);
+						b.getBackground().clearColorFilter();
+					}
+				}
+				started = true;
 			}
 		});
 
@@ -84,20 +87,29 @@ public class MainActivity extends Activity {
 	}
 
 	public void say(final Context context)
-	{	
-		if(letras.size() > 0){	
+	{		
+		if(letras.size() > 0){  
 			try { 
+				MediaPlayer mp;
 				mp = MediaPlayer.create(context, getResources().getIdentifier(sorted.toLowerCase(), "raw","com.possebom.alfabeto"));
-				mp.start(); 
+				mp.setOnCompletionListener(new OnCompletionListener() {
+					public void onCompletion(MediaPlayer mp) {
+						mp.release();
+					}
+				});				
+				mp.start();				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-		}
-		else{
+		}else{
 			try { 
-				mp = MediaPlayer.create(context, R.raw.yeah);	
-				mp.start(); 
+				MediaPlayer mp = MediaPlayer.create(context, R.raw.yeah);
+				mp.setOnCompletionListener(new OnCompletionListener() {
+					public void onCompletion(MediaPlayer mp) {
+						mp.release();
+					}
+				});				
+				mp.start();	
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -105,15 +117,19 @@ public class MainActivity extends Activity {
 	}
 
 	private void beep(final Context context) {
-		try { 
-			mp = MediaPlayer.create(context, R.raw.beep);
+		try {
+			MediaPlayer mp;
+			mp = MediaPlayer.create(this, R.raw.beep);
+			mp.setOnCompletionListener(new OnCompletionListener() {
+				public void onCompletion(MediaPlayer mp) {
+					mp.release();
+				}
+			});
 			mp.start(); 
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 	}
-
-
 
 	public class customAdapter extends BaseAdapter {
 		private Context context;
@@ -167,7 +183,7 @@ public class MainActivity extends Activity {
 							if(btn.getText().equals(alfabeto[position]))
 							{
 								btn.setEnabled(false);							
-								btn.getBackground().setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFFFFFFF));
+								btn.getBackground().setColorFilter(new LightingColorFilter(0x00000000, 0x55555555));
 								letras.remove(str);								
 								sort();							
 							}
